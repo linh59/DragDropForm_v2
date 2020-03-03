@@ -555,32 +555,49 @@ function getList(){
     var formProperties = {};  
     var masterList = [];
     var detailList = [];
-   
-    $('.convertable-section .master-section .prev-holder .form-group').each(function(i, e) {
-        var properties = {};  
-        properties['type'] = $(this).attr("type"); 
-        properties['title'] =  $(this).find('input').val();
-        properties['desc'] =  $(this).find('textarea').val();
-        masterList.push(properties);               
+
+    $('.convertable-section .master-section .layout-builder .layout').each(function(i, e) {
+        var masterProperties = {};
+        var rowTitle = 'row_' + i;
+        var rowList = 'rowList_' + i;
+        rowList = []; 
+        masterList.push(masterProperties); 
+        
+        $(this).find(".row .form-builder").each(function(i, e) {           
+            var rowProperties = {};  
+            var colTitle = 'col_' + i;
+            var colList = 'colList_' + i;
+            colList = []; 
+            rowList.push(rowProperties); 
+
+            $(this).find(".prev-holder .form-group").each(function(i, e) {
+                var properties = {};  
+                properties['type'] = $(this).attr("type"); 
+                properties['title'] =  $(this).find('input').val();
+                properties['desc'] =  $(this).find('textarea').val();
+                colList.push(properties);     
+                          
+            });
+
+            rowProperties[colTitle] = colList;   
+                 
+        });
+
+        masterProperties[rowTitle] = rowList;  
+              
     });
 
-    $('.convertable-section .master-section .prev-holder .form-group').each(function(i, e) {
-        var properties = {};  
-        properties['type'] = $(this).attr("type"); 
-        properties['title'] =  $(this).find('input').val();
-        properties['desc'] =  $(this).find('textarea').val();
-        masterList.push(properties);               
-    });
-    $('.convertable-section .detail-section .prev-holder .form-group').each(function(i, e) {
-        var properties = {};  
-        properties['type'] = $(this).attr("type"); 
-        properties['title'] =  $(this).find('input').val();
-        properties['desc'] =  $(this).find('textarea').val();
-        detailList.push(properties);               
-    });
+
+    // $('.convertable-section .detail-section .prev-holder .form-group').each(function(i, e) {
+    //     var properties = {};  
+    //     properties['type'] = $(this).attr("type"); 
+    //     properties['title'] =  $(this).find('input').val();
+    //     properties['desc'] =  $(this).find('textarea').val();
+    //     detailList.push(properties);               
+    // });
 
     formProperties['master'] = masterList;
-    formProperties['detail'] = detailList;
+    //formProperties['detail'] = detailList;
     formList.push(formProperties); 
 
     var JsonString = JSON.stringify(formList, undefined, 2);
@@ -595,83 +612,140 @@ function previewList(){
     
     var obj = JSON.parse(jsonForm);
     
-    for(var i = 0; i < obj[0].master.length; i++){        
-        var html ;
-        var condition = obj[0].master[i].type;
-        switch (condition) {
-            case (condition = "text"):                   
-                html = `<div class="form-group" type="text" >
-                            <label>` + obj[0].master[i].title + `</label>
-                            <i>` + obj[0].master[i].desc + `</i>
-                        </div>`;
-                break;
-            case (condition = "input"):                   
-                html = `<div class="form-group" type="input" >
-                            <label>` + obj[0].master[i].title + `</label>
-                            <i>` + obj[0].master[i].desc + `</i>
-                            <input type="text" placeholder="Enter text">
-                        </div>`;
-                break;
-            case (condition = "textarea"):   
-                html = `<div class="form-group" type="textarea" >
-                            <label>` + obj[0].master[i].title + `</label>
-                            <i>` + obj[0].master[i].desc + `</i>
-                            <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
-                        </div>`;
-                break;
-            case (condition = "radio"):
-                html = `<div class="form-group" type="input" >
-                            <label>` + obj[0].master[i].title + `</label>
-                            <i>` + obj[0].master[i].desc + `</i>
-                            <input type="text" placeholder="Radio">
-                        </div>`;
-                break;
-            case (condition = "group"):
-                html = `<div class="form-group" type="input" >
-                            <label>` + obj[0].master[i].title + `</label>
-                            <i>` + obj[0].master[i].desc + `</i>
-                            <input type="text" placeholder="group">
-                        </div>`;
-                break;
+
+    $.each(obj[0].master, function( i, e ) {
+        $.each(e, function( i, e ) {
+            $.each(e, function( i, e ) {
+                $.each(e, function( i, e ) {
+                    $.each(e, function( i, e ) {
+                        console.log(e.type);
+                                var html ;
+            var condition = e.type;
+            switch (condition) {
+                case (condition = "text"):                   
+                    html = `<div class="form-group" type="text" >
+                                <label>` + e.title + `</label>
+                                <i>` + obj[0].master[i].desc + `</i>
+                            </div>`;
+                    break;
+                case (condition = "input"):                   
+                    html = `<div class="form-group" type="input" >
+                                <label>` + e.title + `</label>
+                                <i>` + e.desc + `</i>
+                                <input type="text" placeholder="Enter text">
+                            </div>`;
+                    break;
+                case (condition = "textarea"):   
+                    html = `<div class="form-group" type="textarea" >
+                                <label>` + e.title + `</label>
+                                <i>` + e.desc + `</i>
+                                <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
+                            </div>`;
+                    break;
+                case (condition = "radio"):
+                    html = `<div class="form-group" type="input" >
+                                <label>` + e.title + `</label>
+                                <i>` + e.desc + `</i>
+                                <input type="text" placeholder="Radio">
+                            </div>`;
+                    break;
+                case (condition = "group"):
+                    html = `<div class="form-group" type="input" >
+                                <label>` +e.title + `</label>
+                                <i>` + e.desc + `</i>
+                                <input type="text" placeholder="group">
+                            </div>`;
+                    break;
+               
+            }
+           // var div = "<div class='whoWrap'>" + listP.PEOPLE[j].name + " " + j + "</div>"
+            $(".preview-section .master-section").append(html);
+    
+                      });
+
+                  });
+              });
+          });
+    
+      });
+
+    // for(var i = 0; i < obj[0].master.length; i++){        
+    //     var html ;
+    //     var condition = obj[0].master[i].type;
+    //     switch (condition) {
+    //         case (condition = "text"):                   
+    //             html = `<div class="form-group" type="text" >
+    //                         <label>` + obj[0].master[i].title + `</label>
+    //                         <i>` + obj[0].master[i].desc + `</i>
+    //                     </div>`;
+    //             break;
+    //         case (condition = "input"):                   
+    //             html = `<div class="form-group" type="input" >
+    //                         <label>` + obj[0].master[i].title + `</label>
+    //                         <i>` + obj[0].master[i].desc + `</i>
+    //                         <input type="text" placeholder="Enter text">
+    //                     </div>`;
+    //             break;
+    //         case (condition = "textarea"):   
+    //             html = `<div class="form-group" type="textarea" >
+    //                         <label>` + obj[0].master[i].title + `</label>
+    //                         <i>` + obj[0].master[i].desc + `</i>
+    //                         <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
+    //                     </div>`;
+    //             break;
+    //         case (condition = "radio"):
+    //             html = `<div class="form-group" type="input" >
+    //                         <label>` + obj[0].master[i].title + `</label>
+    //                         <i>` + obj[0].master[i].desc + `</i>
+    //                         <input type="text" placeholder="Radio">
+    //                     </div>`;
+    //             break;
+    //         case (condition = "group"):
+    //             html = `<div class="form-group" type="input" >
+    //                         <label>` + obj[0].master[i].title + `</label>
+    //                         <i>` + obj[0].master[i].desc + `</i>
+    //                         <input type="text" placeholder="group">
+    //                     </div>`;
+    //             break;
            
-        }
-       // var div = "<div class='whoWrap'>" + listP.PEOPLE[j].name + " " + j + "</div>"
-        $(".preview-section .master-section").append(html);
-    }
+    //     }
+    //    // var div = "<div class='whoWrap'>" + listP.PEOPLE[j].name + " " + j + "</div>"
+    //     $(".preview-section .master-section").append(html);
+    // }
 
     /* Append to table */
-    var $tableHeader = $('<tr/>');
-    for(var i = 0; i < obj[0].detail.length; i++){      
-        $tableHeader.append( '<th>' + obj[0].detail[i].title + '</th>' );
-    }
-    var $tableBody = $('<tr/>');
-    for(var i = 0; i < obj[0].detail.length; i++){
-        var html ;
-        var condition = obj[0].detail[i].type;
-        switch (condition) {
-            case (condition = "text"):                   
-                html = `<div class="form-group" type="text" >
-                            <label>` + obj[0].detail[i].title + `</label>
-                        </div>`;
-                break;
-            case (condition = "input"):                   
-                html = `<div class="form-group" type="input" >
-                            <input type="text" placeholder="Enter text">
-                        </div>`;
-                break;
-            case (condition = "textarea"):   
-                html = `<div class="form-group" type="input" >
-                            <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
-                        </div>`;
-                break;
+    // var $tableHeader = $('<tr/>');
+    // for(var i = 0; i < obj[0].detail.length; i++){      
+    //     $tableHeader.append( '<th>' + obj[0].detail[i].title + '</th>' );
+    // }
+    // var $tableBody = $('<tr/>');
+    // for(var i = 0; i < obj[0].detail.length; i++){
+    //     var html ;
+    //     var condition = obj[0].detail[i].type;
+    //     switch (condition) {
+    //         case (condition = "text"):                   
+    //             html = `<div class="form-group" type="text" >
+    //                         <label>` + obj[0].detail[i].title + `</label>
+    //                     </div>`;
+    //             break;
+    //         case (condition = "input"):                   
+    //             html = `<div class="form-group" type="input" >
+    //                         <input type="text" placeholder="Enter text">
+    //                     </div>`;
+    //             break;
+    //         case (condition = "textarea"):   
+    //             html = `<div class="form-group" type="input" >
+    //                         <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
+    //                     </div>`;
+    //             break;
            
-        }
+    //     }
       
-        $tableBody.append( '<td>' + html + '</td>' );
-    }
+    //     $tableBody.append( '<td>' + html + '</td>' );
+    // }
 
-    $('#here_table').append($tableHeader);
-    $('#here_table').append($tableBody);
+    // $('#here_table').append($tableHeader);
+    // $('#here_table').append($tableBody);
 }
 
 function addRow(){
