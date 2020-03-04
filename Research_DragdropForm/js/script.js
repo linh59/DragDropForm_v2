@@ -557,50 +557,39 @@ function getList(){
     var detailList = [];
 
     $('.convertable-section .master-section .layout-builder .layout').each(function(i, e) {
-        var masterProperties = {};
-        var rowTitle = 'row_' + i;
-        var rowList = 'rowList_' + i;
-        rowList = []; 
-        masterList.push(masterProperties); 
         
-        $(this).find(".row .form-builder").each(function(i, e) {           
-            var rowProperties = {};  
-            var colTitle = 'col_' + i;
-            var colList = 'colList_' + i;
-            colList = []; 
-            rowList.push(rowProperties); 
+        var row = {};  
+            row['type'] = 'row'; 
+            row['metadata'] =  {"index": i};
+            row['childNode'] = [];
+        
+        $(this).find(".row .form-builder").each(function(i, e) {     
+
+            var column = {};  
+            column['type'] = 'col'; 
+            column['metadata'] =  {"index": i};
+            column['childNode'] = [];
 
             $(this).find(".prev-holder .form-group").each(function(i, e) {
-                var properties = {};  
-                properties['type'] = $(this).attr("type"); 
-                properties['title'] =  $(this).find('input').val();
-                properties['desc'] =  $(this).find('textarea').val();
-                colList.push(properties);     
+                var properties = {}; 
+                properties['metadata'] = 
+                    {'type': $(this).attr("type"),
+                    'title': $(this).find("input").val(),
+                    'desc': $(this).find("textarea").val()};
+                properties['childNode'] = [];
+                column['childNode'].push(properties);     
                           
-            });
-
-            rowProperties[colTitle] = colList;   
-                 
+            });  
+            
+            row['childNode'].push(column);
         });
-
-        masterProperties[rowTitle] = rowList;  
-              
+        
+        masterList.push(row);
     });
 
 
-    // $('.convertable-section .detail-section .prev-holder .form-group').each(function(i, e) {
-    //     var properties = {};  
-    //     properties['type'] = $(this).attr("type"); 
-    //     properties['title'] =  $(this).find('input').val();
-    //     properties['desc'] =  $(this).find('textarea').val();
-    //     detailList.push(properties);               
-    // });
 
-    formProperties['master'] = masterList;
-    //formProperties['detail'] = detailList;
-    formList.push(formProperties); 
-
-    var JsonString = JSON.stringify(formList, undefined, 2);
+    var JsonString = JSON.stringify(masterList, undefined, 2);
     console.log(JsonString);
    return JsonString;
 }
@@ -611,63 +600,101 @@ function previewList(){
     var jsonForm = getList();
     
     var obj = JSON.parse(jsonForm);
-    
+    var partyHTML = '';
 
-    $.each(obj[0].master, function( i, e ) {
-        $.each(e, function( i, e ) {
-            $.each(e, function( i, e ) {
-                $.each(e, function( i, e ) {
-                    $.each(e, function( i, e ) {
-                        console.log(e.type);
-                                var html ;
-            var condition = e.type;
-            switch (condition) {
-                case (condition = "text"):                   
-                    html = `<div class="form-group" type="text" >
-                                <label>` + e.title + `</label>
-                                <i>` + obj[0].master[i].desc + `</i>
-                            </div>`;
+    $.each(obj[0].master, function(partyIdx, row) {
+        /*optional stuff to do after success */
+        partyHTML += '<div class = "row">';
+        
+        $.each(row, function(id, col) {
+            var numCol = col.length;
+           
+            switch (numCol) {
+                case (numCol = 1):                   
+                    partyHTML += '<div class = "col-12 form-builder">';
+
+                    $.each(col, function(id, component) {
+                        console.log(component);
+                       $.each(component, function(id, properties){                      
+                        var condition = properties[id].type;
+                        switch (condition) {
+                            case (condition = "text"):     
+                            console.log(condition);              
+                                partyHTML += `<div class="form-group" type="text" >
+                                            <label>` + properties[id].title + `</label>
+                                            <i>` + properties[id].desc + `</i>
+                                        </div>`;
+                                break;
+                            case (condition = "input"):                   
+                                partyHTML += `<div class="form-group" type="input" >
+                                            <label>` + properties[id].title + `</label>
+                                            <i>` + properties[id].desc + `</i>
+                                            <input type="text" placeholder="Enter text">
+                                        </div>`;
+                                break;
+                            case (condition = "textarea"):   
+                                partyHTML += `<div class="form-group" type="textarea" >
+                                            <label>` + properties[id].title + `</label>
+                                            <i>` + properties[id].desc + `</i>
+                                            <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
+                                        </div>`;
+                                break;
+                            case (condition = "radio"):
+                                partyHTML += `<div class="form-group" type="input" >
+                                            <label>` + properties[id].title + `</label>
+                                            <i>` + properties[id].desc + `</i>
+                                            <input type="text" placeholder="Radio">
+                                        </div>`;
+                                break;
+                            case (condition = "group"):
+                                partyHTML += `<div class="form-group" type="input" >
+                                            <label>` + properties[id].title + `</label>
+                                            <i>` + properties[id].desc + `</i>
+                                            <input type="text" placeholder="group">
+                                        </div>`;
+                                break;
+                           
+                        }
+                       })
+                    });
+
+                    partyHTML += '</div>';
                     break;
-                case (condition = "input"):                   
-                    html = `<div class="form-group" type="input" >
-                                <label>` + e.title + `</label>
-                                <i>` + e.desc + `</i>
-                                <input type="text" placeholder="Enter text">
-                            </div>`;
+
+                case (numCol = 2):             
+                    $.each(col, function(id, component) {
+                        partyHTML += '<div class = "col-lg-6 col-md-6 col-12 form-builder">';
+                        console.log(component);
+                        $.each(component, function(id, properties){                      
+                            
+                            console.log(properties);
+                        })
+                        
+                        
+                        partyHTML += '</div>';
+                       
+                    });                      
+                   
                     break;
-                case (condition = "textarea"):   
-                    html = `<div class="form-group" type="textarea" >
-                                <label>` + e.title + `</label>
-                                <i>` + e.desc + `</i>
-                                <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
-                            </div>`;
-                    break;
-                case (condition = "radio"):
-                    html = `<div class="form-group" type="input" >
-                                <label>` + e.title + `</label>
-                                <i>` + e.desc + `</i>
-                                <input type="text" placeholder="Radio">
-                            </div>`;
-                    break;
-                case (condition = "group"):
-                    html = `<div class="form-group" type="input" >
-                                <label>` +e.title + `</label>
-                                <i>` + e.desc + `</i>
-                                <input type="text" placeholder="group">
-                            </div>`;
+
+                case (numCol = 3):                   
+                    for (var n = 0; n < 3; ++ n)   {
+                        partyHTML += '<div class = "col-lg-4 col-md-4 col-12 form-builder">';
+                        partyHTML += '<p>' + id + '</p>';
+                        partyHTML += '</div>';
+                    }   
                     break;
                
             }
-           // var div = "<div class='whoWrap'>" + listP.PEOPLE[j].name + " " + j + "</div>"
-            $(".preview-section .master-section").append(html);
-    
-                      });
-
-                  });
-              });
-          });
-    
+         
+        });
+        
+        partyHTML += '</div>';
       });
+      
+      $('.preview-section .master-section').append(partyHTML);
+
+
 
     // for(var i = 0; i < obj[0].master.length; i++){        
     //     var html ;
