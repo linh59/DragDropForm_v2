@@ -1,128 +1,16 @@
 $(document).ready(function () {
-
-
-    sortableRow();
-    
-    $(document).on('click', '.remove_bal_field', function (e) {
-        e.preventDefault();
-        var field = $(this).attr('data-field');
-        $(this).closest('.li_' + field).hide('400', function () {
-            $(this).remove();
-
-        });
-    });
-
-    $(document).on('click', '.edit_bal_field', function (e) {
-        e.preventDefault();
-        var field = $(this).attr('data-field');
-        $(this).closest('.li_' + field).find(".holder").toggle('400');
-        $(this).closest('.li_' + field).find(".prev-holder").toggle('400');
-    });
-
-    $(document).on('click', '.add_col_table', function (e) {
-        e.preventDefault();    
-        var field = $(this).attr('data-field');
-        var html_col = `<th class="form-builder">                                        
-                            <button type="button" class="btn btn-primary btn-sm remove_col_table pull-right" data-field="` + field + `">X</button>                                       </th>
-                </th>`;
-       
-        $(this).closest('.li_' + field).find("table thead tr th:last-child").after(html_col);
-    });
-
-    $(document).on('click', '.remove_col_table', function (e) {
-        e.preventDefault();
-        $(this).parent().hide('400', function () {
-            $(this).remove();
-
-        });
-    });
-
-});
-
-function sortableRow() {
-    $(".layout-builder").sortable({
-        connectWith: ".layout-builder"  ,
-        placeholder: "placeholder-highlight" ,
-        
-        cursor: 'move',
-        opacity: 0.9,
-        revert: 150,
-        start: function (event, ui) {
-            ui.placeholder.height(ui.helper.outerHeight());
-        },
-        stop: function (event, ui) {
-        
-        }
-    });
-
-    $(".components-nav .component-col-1").draggable({
-        helper: function () {
-            return getRow_1_dHTML();
-        },
-        connectToSortable: ".layout-builder",
-        start: function (event, ui) {
-           
-        },
-        stop: function(event, ui) {
-            sortableForm();
-        }
-    });
-
-    $(".components-nav .component-col-2").draggable({
-        helper: function () {
-            return getRow_2_dHTML();
-        },
-        connectToSortable: ".layout-builder",
-        start: function (event, ui) {
-           
-        },
-        stop: function(event, ui) {
-            sortableForm();
-        }
-    });
-
-    $(".components-nav .component-col-3").draggable({
-        helper: function () {
-            return getRow_3_dHTML();
-        },
-        connectToSortable: ".layout-builder",
-        start: function (event, ui) {
-           
-        },
-        stop: function(event, ui) {
-            sortableForm();
-        }
-    });
-
-    $(".components-nav .component-table").draggable({
-        helper: function () {
-            return getTabledHTML();
-        },
-        revert: true,
-        connectToSortable: ".layout-builder",
-        start: function (event, ui) {
-           
-        },
-        stop: function(event, ui) {
-            sortableForm();
-        } 
-    });
-   
-    $( ".layout-builder" ).disableSelection();
-}
-
-function sortableForm(){
     var components = [
         {
             type: 'text',
-            template: 
+            templateView: 
 				  '<div class="holder">'
                 + '    <div class="form-group">'
                 + '        <label bind="title"> Title  </label>'
                 + '        <i class="small" bind="desc"> Desc </i>'
                 + '    </div>'
-                + '</div>'
-                + '<div class="prev-holder">'
+                + '</div>',
+            templateEdit: 
+                '<div class="prev-holder">'
                 + '    <div class="form-group" type="text" >'
                 + '          <i>Text</i>'
                 + '          <input type="text" placeholder="Enter text" bind="title" >'
@@ -132,15 +20,16 @@ function sortableForm(){
         },
         {
             type: 'input',
-            template: 				  
+            templateView: 				  
                 '<div class="holder">'
                 + '    <div class="form-group" >'
                 + '        <label bind="title"> Title  </label>'
                 + '        <i class="small" bind="desc"> Desc </i>'
                 + '        <input type="text">'
                 + '    </div>'
-                + '</div>'
-                + '<div class="prev-holder">'                  
+                + '</div>',
+            templateEdit: 				  
+                '<div class="prev-holder">'                  
                 + '    <div class="form-group" type="input" >'
                 + '          <i>input</i>'
                 + '          <input type="text" placeholder="Enter text" bind="title">'
@@ -150,15 +39,16 @@ function sortableForm(){
         },
         {
             type: 'textarea',
-            template: 				  
+            templateView: 				  
                 '<div class="holder">'
                 + '    <div class="form-group">'
                 + '        <label bind="title"> Title  </label>'
                 + '        <i class="small" bind="desc"> Desc </i>'
                 + '        <textarea name="" id="" cols="30" rows="10" bind="desc"></textarea>'
                 + '    </div>'
-                + '</div>'
-                + '<div class="prev-holder">'                  
+                + '</div>',
+            templateEdit: 				  
+                '<div class="prev-holder">'                  
                 + '    <div class="form-group" type="textarea" >'
                 + '          <i>textarea</i>'
                 + '          <input type="text" placeholder="Enter text" bind="title">'
@@ -168,7 +58,7 @@ function sortableForm(){
         },
         {
             type: 'datepicker',
-            template: 				  
+            templateView: 				  
                 '<div class="holder">'
                 + '    <div class="form-group">'
                 + '        <label bind="title"> Title  </label>'
@@ -178,8 +68,9 @@ function sortableForm(){
                 + '            <span class="icon-calendar input-group-addon"></span>'
                 + '        </div>  '
                 + '    </div>'
-                + '</div>'
-                + '<div class="prev-holder">'                  
+                + '</div>',
+            templateEdit: 				  
+                '<div class="prev-holder">'                  
                 + '    <div class="form-group" type="datepicker" >'
                 + '          <i>datepicker</i>'
                 + '          <input type="text" placeholder="Enter text" bind="title">'
@@ -189,7 +80,7 @@ function sortableForm(){
         },
         {
             type: 'table',
-            template: 				  
+            templateView: 				  
                 '<div class="holder">'
                 + '    <div class="form-group">'
                 + '        <label bind="title"> Title  </label>'
@@ -226,10 +117,146 @@ function sortableForm(){
                 + '            </div>'
                 + '      </div>'
                 + '</div>',
+            templateEdit: 				  
+                '<div class="prev-holder">'                  
+                + '    <div class="form-group" type="datepicker" >'
+                + '          <div class="table-responsive table_` + field + `" >'
+                + '                <table class="table">'
+                + '                    <thead>'
+                + '                        <tr>'
+                + '                            <th class="form-builder">'
+                + '                                <button type="button" class="remove_col_table" data-field="` + field + `">X</button>'                                
+                + '                            </th>'
+                + '                            <th class="form-builder">'
+                + '                                <button type="button" class=" remove_col_table " data-field="` + field + `">X</button>'                                       
+                + '                            </th>'
+                + '                        </tr>'
+                + '                    </thead>'
+                + '                </table>'
+                + '            </div>'
+                + '      </div>'
+                + '</div>',
         }
     ]
 
 
+
+
+    sortableRow(components);
+    
+    $(document).on('click', '.remove_bal_field', function (e) {
+        e.preventDefault();
+        var field = $(this).attr('data-field');
+        $(this).closest('.li_' + field).hide('400', function () {
+            $(this).remove();
+
+        });
+    });
+
+    $(document).on('click', '.edit_bal_field', function (e) {
+        e.preventDefault();
+        var field = $(this).attr('data-field');
+        $(this).closest('.li_' + field).find(".holder").toggle('400');
+        $(this).closest('.li_' + field).find(".prev-holder").toggle('400');
+    });
+
+    $(document).on('click', '.add_col_table', function (e) {
+        e.preventDefault();    
+        var field = $(this).attr('data-field');
+        var html_col = `<th class="form-builder">                                        
+                            <button type="button" class="btn btn-primary btn-sm remove_col_table pull-right" data-field="` + field + `">X</button>                                       </th>
+                </th>`;
+       
+        $(this).closest('.li_' + field).find("table thead tr th:last-child").after(html_col);
+    });
+
+    $(document).on('click', '.remove_col_table', function (e) {
+        e.preventDefault();
+        $(this).parent().hide('400', function () {
+            $(this).remove();
+
+        });
+    });
+
+    $(document).on('click', '.btn-preview', function (e) {
+        previewList(components)
+    });
+
+});
+
+function sortableRow(components) {
+    $(".layout-builder").sortable({
+        connectWith: ".layout-builder"  ,
+        placeholder: "placeholder-highlight" ,
+        
+        cursor: 'move',
+        opacity: 0.9,
+        revert: 150,
+        start: function (event, ui) {
+            ui.placeholder.height(ui.helper.outerHeight());
+        },
+        stop: function (event, ui) {
+        
+        }
+    });
+
+    $(".components-nav .component-col-1").draggable({
+        helper: function () {
+            return getRow_1_dHTML();
+        },
+        connectToSortable: ".layout-builder",
+        start: function (event, ui) {
+           
+        },
+        stop: function(event, ui) {
+            sortableForm(components);
+        }
+    });
+
+    $(".components-nav .component-col-2").draggable({
+        helper: function () {
+            return getRow_2_dHTML();
+        },
+        connectToSortable: ".layout-builder",
+        start: function (event, ui) {
+           
+        },
+        stop: function(event, ui) {
+            sortableForm(components);
+        }
+    });
+
+    $(".components-nav .component-col-3").draggable({
+        helper: function () {
+            return getRow_3_dHTML();
+        },
+        connectToSortable: ".layout-builder",
+        start: function (event, ui) {
+           
+        },
+        stop: function(event, ui) {
+            sortableForm(components);
+        }
+    });
+
+    $(".components-nav .component-table").draggable({
+        helper: function () {
+            return getTabledHTML();
+        },
+        revert: true,
+        connectToSortable: ".layout-builder",
+        start: function (event, ui) {
+           
+        },
+        stop: function(event, ui) {
+            sortableForm(components);
+        } 
+    });
+   
+    $( ".layout-builder" ).disableSelection();
+}
+
+function sortableForm(components){
 
     $(".form-builder").sortable({
         connectWith: ".form-builder"  ,
@@ -238,12 +265,7 @@ function sortableForm(){
         cursor: 'move',
         opacity: 0.9,
         revert: 150,
-        // beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
-        // start: (evt, ui) => h.startMoving.call(h, evt, ui),
-        // stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
-        //  cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button', '.is-locked'].join(
-        // ', ',
-        // ),
+
         start: function (event, ui) {
             ui.placeholder.height(ui.helper.outerHeight());
              //$(ui.helper).addClass("ui-draggable-helper");
@@ -269,8 +291,8 @@ function sortableForm(){
                 var typeComponent = "component-"+ e.type;
                 
                 if(typeComponent === event.target.id){                    
-                    var html = ui.helper.append(e.template);
-                    
+                    var html = ui.helper.append(e.templateView);
+                    html = ui.helper.append(e.templateEdit);
                     var bindTitle = 'title-' + $(html).attr("data-field");
                     var bindDesc = 'desc-' + $(html).attr("data-field");
 
@@ -308,59 +330,6 @@ function sortableForm(){
 
 
     $( ".form-builder" ).disableSelection();
-
-
-    // $(".components-nav .component-text").draggable({
-    //     helper: function () {
-    //         return getTextFieldHTML();
-    //     },
-    //     connectToSortable: ".form-builder",
-    //     start: function (event, ui) {
-           
-    //     },
-    //     stop: function(event, ui) {
-    //         var pos = ui.helper.position(); 
-    //         twoWayBinding();
-    //     }
-    // });
-
-    // $(".components-nav .component-input").draggable({
-    //     helper: function () {
-    //         return getInputFieldHTML();
-    //     },
-    //     connectToSortable: ".form-builder",
-    //     stop: function(event, ui) {
-    //         var pos = ui.helper.position(); 
-    //         twoWayBinding();
-    //     }
-    // });
-
-    // $(".components-nav .component-textarea").draggable({
-    //     helper: function () {
-    //         return getTextAreaFieldHTML();
-    //     },
-    //     connectToSortable: ".form-builder",
-    //     stop: function(event, ui) {
-    //         var pos = ui.helper.position(); 
-    //         twoWayBinding();
-    //     }
-    // });
-
-    // $(".components-nav .component-datepicker").draggable({
-    //     helper: function () {
-    //         return getDatePickerFieldHTML();
-    //     },
-    //     connectToSortable: ".form-builder",
-    //     stop: function(event, ui) {
-    //         var pos = ui.helper.position(); 
-    //         twoWayBinding();
-    //         modifyDatapicker();
-    //     }
-    // });
-
-
-    
-
 }
 
 function getRow_1_dHTML() {
@@ -590,104 +559,194 @@ function getList(){
 
 
     var JsonString = JSON.stringify(masterList, undefined, 2);
-    console.log(JsonString);
+    // console.log(JsonString);
    return JsonString;
 }
 
-function previewList(){
+function previewList(components){
     $(".preview-section .master-section").empty();
     $(".preview-section .detail-section table").empty();
     var jsonForm = getList();
     
     var obj = JSON.parse(jsonForm);
+    console.log(obj);
     var partyHTML = '';
 
-    $.each(obj[0].master, function(partyIdx, row) {
+    $.each(obj, function(partyIdx, row) {
         /*optional stuff to do after success */
-        partyHTML += '<div class = "row">';
         
-        $.each(row, function(id, col) {
-            var numCol = col.length;
-           
-            switch (numCol) {
-                case (numCol = 1):                   
-                    partyHTML += '<div class = "col-12 form-builder">';
+        partyHTML += '<div class = "row">';
+        var numCol = row.childNode.length;
 
-                    $.each(col, function(id, component) {
-                        console.log(component);
-                       $.each(component, function(id, properties){                      
-                        var condition = properties[id].type;
+        switch (numCol) {
+            case (numCol = 1):                   
+               
+                $.each(row.childNode, function(id, col) {
+                    partyHTML += '<div class = "col-12 form-builder">';     
+                       $.each(col.childNode, function(id, properties){         
+                        var property =  properties.metadata;
+                        var condition = properties.metadata.type;
+                        $.each(components, function(i, e) {
+                            // switch (condition) {
+                            //     case (condition = "text"):                 
+                            //         partyHTML += `<div class="form-group" type="text" >
+                            //                     <label>` + property.title + `</label>
+                            //                     <i>` + property.desc + `</i>
+                            //                 </div>`;
+                            //         break;
+                            //     case (condition = "input"):                   
+                            //         partyHTML += `<div class="form-group" type="input" >
+                            //                     <label>` + property.title + `</label>
+                            //                     <i>` + property.desc + `</i>
+                            //                     <input type="text" placeholder="Enter text">
+                            //                 </div>`;
+                            //         break;
+                            //     case (condition = "textarea"):   
+                            //         partyHTML += `<div class="form-group" type="textarea" >
+                            //                     <label>` + property.title + `</label>
+                            //                     <i>` + property.desc + `</i>
+                            //                     <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
+                            //                 </div>`;
+                            //         break;
+                            //     case (condition = "radio"):
+                            //         partyHTML += `<div class="form-group" type="input" >
+                            //                     <label>` + property.title + `</label>
+                            //                     <i>` + property.desc + `</i>
+                            //                     <input type="text" placeholder="Radio">
+                            //                 </div>`;
+                            //         break;
+                            //     case (condition = "group"):
+                            //         partyHTML += `<div class="form-group" type="input" >
+                            //                     <label>` + property.title + `</label>
+                            //                     <i>` + property.desc + `</i>
+                            //                     <input type="text" placeholder="group">
+                            //                 </div>`;
+                            //         break;
+                            
+                            // }
+                            var typeComponent = e.type;
+                            
+                            if(condition === typeComponent){                    
+                               
+                                var html = e.templateView;
+                                    var bindTitle = $(html).find(".form-group label").text(property.title);
+                                    var test = $(html).html(bindTitle);
+                                   
+                                console.log(test);
+
+                                partyHTML += html;
+                            }
+                        });   
+                        
+                    })                      
+                });
+               
+                partyHTML += '</div>';
+                break;
+
+            case (numCol = 2):             
+                $.each(row.childNode, function(id, col) {
+                    partyHTML += '<div class = "col-lg-6 col-md-6 col-12 form-builder">';
+                    $.each(col.childNode, function(id, properties){         
+                        var property =  properties.metadata;
+                        var condition = properties.metadata.type;
                         switch (condition) {
-                            case (condition = "text"):     
-                            console.log(condition);              
+                            case (condition = "text"):                 
                                 partyHTML += `<div class="form-group" type="text" >
-                                            <label>` + properties[id].title + `</label>
-                                            <i>` + properties[id].desc + `</i>
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
                                         </div>`;
                                 break;
                             case (condition = "input"):                   
                                 partyHTML += `<div class="form-group" type="input" >
-                                            <label>` + properties[id].title + `</label>
-                                            <i>` + properties[id].desc + `</i>
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
                                             <input type="text" placeholder="Enter text">
                                         </div>`;
                                 break;
                             case (condition = "textarea"):   
                                 partyHTML += `<div class="form-group" type="textarea" >
-                                            <label>` + properties[id].title + `</label>
-                                            <i>` + properties[id].desc + `</i>
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
                                             <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
                                         </div>`;
                                 break;
                             case (condition = "radio"):
                                 partyHTML += `<div class="form-group" type="input" >
-                                            <label>` + properties[id].title + `</label>
-                                            <i>` + properties[id].desc + `</i>
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
                                             <input type="text" placeholder="Radio">
                                         </div>`;
                                 break;
                             case (condition = "group"):
                                 partyHTML += `<div class="form-group" type="input" >
-                                            <label>` + properties[id].title + `</label>
-                                            <i>` + properties[id].desc + `</i>
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
                                             <input type="text" placeholder="group">
                                         </div>`;
                                 break;
-                           
+                        
                         }
-                       })
-                    });
-
+                    })  
                     partyHTML += '</div>';
-                    break;
+                
+                });                      
+            
+                break;
 
-                case (numCol = 2):             
-                    $.each(col, function(id, component) {
-                        partyHTML += '<div class = "col-lg-6 col-md-6 col-12 form-builder">';
-                        console.log(component);
-                        $.each(component, function(id, properties){                      
-                            
-                            console.log(properties);
-                        })
+            case (numCol = 3):                   
+                $.each(row.childNode, function(id, col) {
+                    partyHTML += '<div class = "col-lg-4 col-md-4 col-12 form-builder">';
+                    $.each(col.childNode, function(id, properties){         
+                        var property =  properties.metadata;
+                        var condition = properties.metadata.type;
+                        switch (condition) {
+                            case (condition = "text"):                 
+                                partyHTML += `<div class="form-group" type="text" >
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
+                                        </div>`;
+                                break;
+                            case (condition = "input"):                   
+                                partyHTML += `<div class="form-group" type="input" >
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
+                                            <input type="text" placeholder="Enter text">
+                                        </div>`;
+                                break;
+                            case (condition = "textarea"):   
+                                partyHTML += `<div class="form-group" type="textarea" >
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
+                                            <textarea name="" id="" cols="30" rows="10" placeholder="Enter text"></textarea>
+                                        </div>`;
+                                break;
+                            case (condition = "radio"):
+                                partyHTML += `<div class="form-group" type="input" >
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
+                                            <input type="text" placeholder="Radio">
+                                        </div>`;
+                                break;
+                            case (condition = "group"):
+                                partyHTML += `<div class="form-group" type="input" >
+                                            <label>` + property.title + `</label>
+                                            <i>` + property.desc + `</i>
+                                            <input type="text" placeholder="group">
+                                        </div>`;
+                                break;
                         
-                        
-                        partyHTML += '</div>';
-                       
-                    });                      
-                   
-                    break;
+                        }
+                    })  
+                    partyHTML += '</div>';
+                
+                });   
 
-                case (numCol = 3):                   
-                    for (var n = 0; n < 3; ++ n)   {
-                        partyHTML += '<div class = "col-lg-4 col-md-4 col-12 form-builder">';
-                        partyHTML += '<p>' + id + '</p>';
-                        partyHTML += '</div>';
-                    }   
-                    break;
-               
-            }
-         
-        });
+                break;
+        
+        }
+
+      
         
         partyHTML += '</div>';
       });
@@ -695,7 +754,8 @@ function previewList(){
       $('.preview-section .master-section').append(partyHTML);
 
 
-
+   
+    
     // for(var i = 0; i < obj[0].master.length; i++){        
     //     var html ;
     //     var condition = obj[0].master[i].type;
