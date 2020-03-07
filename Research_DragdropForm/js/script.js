@@ -628,13 +628,13 @@ function previewList(components){
                             
                             if(condition === typeComponent){                    
                                
-                                var html = e.templateView;
-                                    var bindTitle = $(html).find(".form-group label").text(property.title);
-                                    var test = $(html).html(bindTitle);
-                                   
-                                console.log(test);
 
-                                partyHTML += html;
+                                var html =  $(e.templateView);
+
+                                html.find('label').text(property.title);
+                                console.log(html.html());
+                                partyHTML += html.html();
+
                             }
                         });   
                         
