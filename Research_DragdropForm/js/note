@@ -1,0 +1,7 @@
+                        var html =  $(`<div class="form-group" type="text" >
+                                             <label></label>
+                                             <i></i></i>
+                                        </div>`);
+
+                        html.find('label').text('whatever');
+                        partyHTML += html.html();
