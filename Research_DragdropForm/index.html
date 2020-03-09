@@ -24,30 +24,22 @@
                 <div class="convertable-section">
                     <h4>Master</h4>
                     <div class="master-section">
-                        <div class="layout-builder">
-                            
-                            
-                        </div>
-                       
+                        <div class="layout-builder"></div>                      
                     </div>
                     <h4>Detail</h4>
-                    <div class="detail-section d-flex flex-wrap"> </div>
+                    <div class="detail-section">
+                        <div class="layout-builder"></div>    
+                    </div>
 
                     <button class="btn-preview">Preview</button>
                     <button onclick="getList()">Save</button>
                   </div>
                   <h4>Preview</h4>
                   <div class="preview-section">
-                      <div class="master-section">
-                        <h4>Master</h4>
-                      </div>
-                      <div class="detail-section">
-                        <h4>Detail</h4>
-                        <button onclick="addRow()" class="btn">Add Row</button>
-                        <table id="here_table" class="table">
-                           
-                        </table>
-                      </div>
+                    <h4>Master</h4>
+                    <div class="master-section"></div>
+                    <h4>Detail</h4>
+                    <div class="detail-section"></div>
                   </div>
                  
                  
@@ -60,13 +52,21 @@
                     <li  id="component-datepicker" class="component-datepicker component">Datepicker</li>
                     <li id="component-table" class="component-table component">table</li>
 
-                    <li class="component-col-1">1 Col</li>
-                    <li class="component-col-2">2 Col</li>
-                    <li class="component-col-3">3 Col</li>
+                    <li id="component-col-1"  class="component-col component-col-1">1 Col</li>
+                    <li id="component-col-2" class="component-col component-col-2">2 Col</li>
+                    <li id="component-col-3" class="component-col component-col-3">3 Col</li>
                     
                 </ul>
 
                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button onclick="addRow()" class="btn">Add Row</button>
+                <table id="here_table" class="table">
+                   
+                </table>
             </div>
         </div>
     </div>
