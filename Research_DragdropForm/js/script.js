@@ -328,8 +328,6 @@ function sortableForm(components){
         helper: function () {
             var field = generateField();
             var html = `<div class="btns-section">
-                            
-                            <button type="button" class="btn btn-primary btn-sm edit_bal_field pull-right" data-field="` + field + `">Edit</button>
                             <button type="button" class="btn btn-primary btn-sm remove_bal_field pull-right" data-field="` + field + `">X</button>
                         </div>`;
             return $('<div data-field="' + field + '">').addClass('li_' + field + ' form_builder_field').html(html);
@@ -462,7 +460,7 @@ function getList(){
     formSections['detail'] = detailList;
     formList.push(formSections);
     var JsonString = JSON.stringify(formList, undefined, 2);
-
+    console.log(formList);
    return JsonString;
 }
 
