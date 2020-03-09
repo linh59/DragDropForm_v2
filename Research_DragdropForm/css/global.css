@@ -8,9 +8,7 @@ input, textarea{
 .components-nav{
     position: fixed;
 }
-.prev-holder{
-    display: none;
-}
+
 .form_builder_field{
     height: auto !important;
     width: 100% !important;

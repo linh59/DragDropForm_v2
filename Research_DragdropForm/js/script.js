@@ -132,27 +132,17 @@ $(document).ready(function () {
                 + '                            </th>'
                 + '                        </tr>'
                 + '                    </thead>'
+                + '                    <tbody>'
+                + '                        <tr>'
+                + '                            <td class="form-builder">'
+                + '                            </td>'
+                + '                            <td class="form-builder">'
+                + '                            </td>'
+                + '                        </tr>'
+                + '                    </tbody>'
                 + '                </table>'
                 + '            </div>'
                 + '    </div>'
-                + '</div>'
-                + '<div class="prev-holder">'                  
-                + '    <div class="form-group" type="datepicker" >'
-                + '          <div class="table-responsive table_` + field + `" >'
-                + '                <table class="table">'
-                + '                    <thead>'
-                + '                        <tr>'
-                + '                            <th class="form-builder">'
-                + '                                <button type="button" class="remove_col_table" data-field="` + field + `">X</button>'                                
-                + '                            </th>'
-                + '                            <th class="form-builder">'
-                + '                                <button type="button" class=" remove_col_table " data-field="` + field + `">X</button>'                                       
-                + '                            </th>'
-                + '                        </tr>'
-                + '                    </thead>'
-                + '                </table>'
-                + '            </div>'
-                + '      </div>'
                 + '</div>',
             templateEdit: 				  
                 '<div class="prev-holder">'                  
@@ -162,13 +152,22 @@ $(document).ready(function () {
                 + '                    <thead>'
                 + '                        <tr>'
                 + '                            <th class="form-builder">'
-                + '                                <button type="button" class="remove_col_table" data-field="` + field + `">X</button>'                                
+                + '                                <button type="button" class="remove_col_table noDrag" data-field="` + field + `">X</button>'                                
                 + '                            </th>'
                 + '                            <th class="form-builder">'
-                + '                                <button type="button" class=" remove_col_table " data-field="` + field + `">X</button>'                                       
+                + '                                <button type="button" class=" remove_col_table noDrag" data-field="` + field + `">X</button>'                                       
                 + '                            </th>'
                 + '                        </tr>'
                 + '                    </thead>'
+                + '                    <tbody>'
+                + '                        <tr>'
+                + '                            <td class="form-builder">'
+                + '                            </td>'
+                + '                            <td class="form-builder">'
+                + '                            </td>'
+                + '                        </tr>'
+                + '                    </tbody>'
+
                 + '                </table>'
                 + '            </div>'
                 + '      </div>'
@@ -196,22 +195,56 @@ $(document).ready(function () {
 
     $(document).on('click', '.add_col_table', function (e) {
         e.preventDefault();    
+        
         var field = $(this).attr('data-field');
         var html_col = `<th class="form-builder">                                        
-                            <button type="button" class="btn btn-primary btn-sm remove_col_table pull-right" data-field="` + field + `">X</button>                                       </th>
-                </th>`;
+                            <button type="button" class="btn btn-primary btn-sm remove_col_table pull-right" data-field="` + field + `">X</button> 
+                        </th>`;
        
-        $(this).closest('.li_' + field).find("table thead tr th:last-child").after(html_col);
+        $(this).parent().parent().find(".prev-holder table thead tr th:last-child").after(html_col);
+
+        var html_col_td = `<td class="form-builder"></td>`;
+
+        $(this).parent().parent().find(".prev-holder table tbody tr td:last-child").after(html_col_td);
+
+        sortableForm(components);
     });
 
     $(document).on('click', '.remove_col_table', function (e) {
         e.preventDefault();
+        var col = $(this).parent().prevAll().length;
+
         $(this).parent().hide('400', function () {
             $(this).remove();
-
         });
+        var numRow = $(this).parents('table').find("tbody > tr").length;
+        $(this).parents('table').find("tbody > tr").each(function(index, tr) { 
+            $(this).find('td').eq(col).hide('400', function () {
+                $(this).remove();
+            });
+         });
+       
     });
 
+    $(document).on('click', '.add_row_table', function (e) {
+        e.preventDefault();    
+        var field = $(this).attr('data-field');
+        var col = $(this).parent().parent().find(".prev-holder table > thead > tr > th").length;
+
+        var partyHTML = '';
+        partyHTML +=   `<tr>`
+        for (var i = 0; i < col; i++){
+            partyHTML +=  `<td class="form-builder"></td>`;
+        }
+
+        partyHTML +=   `</tr>`;
+        $(this).parent().parent().find(".prev-holder table > tbody > tr:last-child").after(partyHTML);
+
+
+        sortableForm(components);
+    });
+
+    
     $(document).on('click', '.btn-preview', function (e) {
         previewMasterList(components, columns);
         previewDetailList(components, columns);
@@ -295,6 +328,7 @@ function sortableForm(components){
         helper: function () {
             var field = generateField();
             var html = `<div class="btns-section">
+                            
                             <button type="button" class="btn btn-primary btn-sm edit_bal_field pull-right" data-field="` + field + `">Edit</button>
                             <button type="button" class="btn btn-primary btn-sm remove_bal_field pull-right" data-field="` + field + `">X</button>
                         </div>`;
@@ -307,8 +341,7 @@ function sortableForm(components){
                 var typeComponent = "component-"+ e.type;
                 
                 if(typeComponent === event.target.id){                    
-                    var html = ui.helper.append(e.templateView);
-                    html = ui.helper.append(e.templateEdit);
+                    var html = ui.helper.append(e.templateEdit);
                     var bindTitle = 'title-' + $(html).attr("data-field");
                     var bindDesc = 'desc-' + $(html).attr("data-field");
 
@@ -319,19 +352,24 @@ function sortableForm(components){
                         $(this).attr("bind",bindDesc);
                     });
                 }
-            });             
+                
+               
+            }); 
+            
+            if(event.target.id === "component-table"){
+                var field = generateField();
+                var html = ui.helper.find(".btns-section").append(`<button type="button" class="btn btn-primary btn-sm add_col_table pull-right" data-field="` + field + `">Add th</button>     
+                <button type="button" class="btn btn-primary btn-sm add_row_table pull-right" data-field="` + field + `">Add row</button>     `);
+            }
         },
         stop: function(event, ui) {
             var pos = ui.helper.position(); 
-             twoWayBinding();
+            twoWayBinding();
+            modifyDatapicker();
+            if(event.target.id === "component-table"){                    
+                sortableForm(components);
+            }
 
-             $.each(components, function(i, e) {
-                var typeComponent = "component-"+ e.type;
-                
-                if(typeComponent === ''){                    
-                    modifyDatapicker();
-                }
-            });  
              
             // console.log(ui.helper.parent());
             // var col = ui.helper.parent().prevAll().length;
@@ -347,30 +385,6 @@ function sortableForm(components){
 
     $( ".form-builder" ).disableSelection();
 }
-
-
-// function getTabledHTML() {
-//     var field = generateField();
-//     var html = `<div class="layout li_` + field + `">
-//                      <button type="button" class="btn btn-primary btn-sm add_col_table pull-right" data-field="` + field + `">Add col</button>              
-//                      <button type="button" class="btn btn-primary btn-sm remove_bal_field pull-right" data-field="` + field + `">X</button>              
-//                      <div class="table-responsive table_` + field + `" >
-//                         <table class="table">
-//                             <thead>
-//                                 <tr>
-//                                     <th class="form-builder">
-//                                         <button type="button" class="remove_col_table" data-field="` + field + `">X</button>                                       
-//                                     </th>
-//                                     <th class="form-builder">
-//                                         <button type="button" class=" remove_col_table " data-field="` + field + `">X</button>                                       
-//                                     </th>
-//                                 </tr>
-//                             </thead>
-//                         </table>
-//                     </div>
-//                 </div>`;
-//     return html;
-// };
 
 
 function generateField() {
@@ -462,102 +476,90 @@ function previewMasterList(components, columns){
     
 
     $.each(obj[0].master, function(partyIdx, row) {        
+        partyHTML += '<div class = "row">';
+        var numCol = row.childNode.length;
 
-        $.each(columns, function(i, e) {
-            
-            if(row.type ===  e.type){  
-                console.log(e.template);
-                console.log('e type: '+ e.type);                                      
-                var html =  $(e.template);
-                
-                partyHTML += e.template;
-
-                
-
-            }
-            
-        });  
-        // switch (numCol) {
-        //     case (numCol = 1):                   
+        switch (numCol) {
+            case (numCol = 1):                   
                
-        //         $.each(row.childNode, function(id, col) {
-        //             partyHTML += '<div class = "col-12 form-builder">';    
+                $.each(row.childNode, function(id, col) {
+                    partyHTML += '<div class = "col-12 form-builder">';    
                      
-        //                $.each(col.childNode, function(id, properties){         
-        //                 var property =  properties.metadata;
-        //                 var condition = properties.metadata.type;
-        //                 $.each(components, function(i, e) {
-        //                     var typeComponent = e.type;
+                       $.each(col.childNode, function(id, properties){         
+                        var property =  properties.metadata;
+                        var condition = properties.metadata.type;
+                        $.each(components, function(i, e) {
+                            var typeComponent = e.type;
                             
-        //                     if(condition === typeComponent){                                              
-        //                         var html =  $(e.templateView);
+                            if(condition === typeComponent){                                              
+                                var html =  $(e.templateView);
 
-        //                         html.find('.form-group > [bind=title]').text(property.title);
-        //                         html.find('.form-group > [bind=desc]').text(property.desc);
+                                html.find('.form-group > [bind=title]').text(property.title);
+                                html.find('.form-group > [bind=desc]').text(property.desc);
                                 
-        //                         partyHTML += html.html();
+                                partyHTML += html.html();
 
-        //                     }
-        //                 });   
+                            }
+                        });   
                         
-        //             })                      
-        //         });
+                    })                      
+                });
                
-        //         partyHTML += '</div>';
-        //         break;
+                partyHTML += '</div>';
+                break;
 
-        //     case (numCol = 2):             
-        //         $.each(row.childNode, function(id, col) {
-        //             partyHTML += '<div class = "col-lg-6 col-md-6 col-12 form-builder">';
-        //             $.each(col.childNode, function(id, properties){         
-        //                 var property =  properties.metadata;
-        //                 var condition = properties.metadata.type;
-        //                 $.each(components, function(i, e) {
-        //                     var typeComponent = e.type;
+            case (numCol = 2):             
+                $.each(row.childNode, function(id, col) {
+                    partyHTML += '<div class = "col-lg-6 col-md-6 col-12 form-builder">';
+                    $.each(col.childNode, function(id, properties){         
+                        var property =  properties.metadata;
+                        var condition = properties.metadata.type;
+                        $.each(components, function(i, e) {
+                            var typeComponent = e.type;
                             
-        //                     if(condition === typeComponent){                                              
-        //                         var html =  $(e.templateView);
+                            if(condition === typeComponent){                                              
+                                var html =  $(e.templateView);
 
-        //                         html.find('.form-group > [bind=title]').text(property.title);
-        //                         html.find('.form-group > [bind=desc]').text(property.desc);
+                                html.find('.form-group > [bind=title]').text(property.title);
+                                html.find('.form-group > [bind=desc]').text(property.desc);
                                 
-        //                         partyHTML += html.html();
+                                partyHTML += html.html();
 
-        //                     }
-        //                 });   
-        //             })  
-        //             partyHTML += '</div>';
+                            }
+                        });   
+                    })  
+                    partyHTML += '</div>';
                 
-        //         });                      
+                });                      
             
-        //         break;
+                break;
 
-        //     case (numCol = 3):                   
-        //         $.each(row.childNode, function(id, col) {
-        //             partyHTML += '<div class = "col-lg-4 col-md-4 col-12 form-builder">';
-        //             $.each(col.childNode, function(id, properties){         
-        //                 var property =  properties.metadata;
-        //                 var condition = properties.metadata.type;
-        //                 $.each(components, function(i, e) {
-        //                     var typeComponent = e.type;
+            case (numCol = 3):                   
+                $.each(row.childNode, function(id, col) {
+                    partyHTML += '<div class = "col-lg-4 col-md-4 col-12 form-builder">';
+                    $.each(col.childNode, function(id, properties){         
+                        var property =  properties.metadata;
+                        var condition = properties.metadata.type;
+                        $.each(components, function(i, e) {
+                            var typeComponent = e.type;
                             
-        //                     if(condition === typeComponent){                                              
-        //                         var html =  $(e.templateView);
+                            if(condition === typeComponent){                                              
+                                var html =  $(e.templateView);
 
-        //                         html.find('.form-group > [bind=title]').text(property.title);
-        //                         html.find('.form-group > [bind=desc]').text(property.desc);
+                                html.find('.form-group > [bind=title]').text(property.title);
+                                html.find('.form-group > [bind=desc]').text(property.desc);
                                 
-        //                         partyHTML += html.html();
+                                partyHTML += html.html();
 
-        //                     }
-        //                 });   
-        //             })  
-        //             partyHTML += '</div>';
+                            }
+                        });   
+                    })  
+                    partyHTML += '</div>';
                 
-        //         });   
-        //         break;
+                });   
+                break;
         
-        // }
+        }
         partyHTML += '</div>';
       });
       
@@ -597,6 +599,7 @@ function previewMasterList(components, columns){
 
     // $('#here_table').append($tableHeader);
     // $('#here_table').append($tableBody);
+    modifyDatapicker();
 }
 
 function previewDetailList(components){
@@ -698,6 +701,7 @@ function previewDetailList(components){
       });
       
     $('.preview-section .detail-section').append(partyHTML);
+    modifyDatapicker();
 
 }
 
