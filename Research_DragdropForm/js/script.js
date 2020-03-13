@@ -146,7 +146,7 @@ $(document).ready(function () {
                 + '</div>',
             templateEdit: 				  
                 '<div class="prev-holder">'                  
-                + '    <div class="form-group" type="datepicker" >'
+                + '    <div class="form-group" type="table" >'
                 + '          <div class="table-responsive table_` + field + `" >'
                 + '                <table class="table">'
                 + '                    <thead>'
@@ -410,10 +410,19 @@ function getList(){
 
             $(this).find(".prev-holder .form-group").each(function(i, e) {
                 var properties = {}; 
-                properties['metadata'] = 
+                console.log($(this));
+                if($(this).attr("type") == "table"){
+                    properties['metadata'] = 
                     {'type': $(this).attr("type"),
                     'title': $(this).find("input").val(),
                     'desc': $(this).find("textarea").val()};
+                }else{
+                    properties['metadata'] = 
+                    {'type': $(this).attr("type"),
+                    'title': $(this).find("input").val(),
+                    'desc': $(this).find("textarea").val()};
+                }
+                
                 properties['childNode'] = [];
                 column['childNode'].push(properties);     
                           
@@ -460,7 +469,7 @@ function getList(){
     formSections['detail'] = detailList;
     formList.push(formSections);
     var JsonString = JSON.stringify(formList, undefined, 2);
-    console.log(formList);
+    console.log(JsonString);
    return JsonString;
 }
 
