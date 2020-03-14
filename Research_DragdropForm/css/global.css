@@ -22,7 +22,8 @@ input, textarea{
     padding-bottom: 20px;
 }
 
-.form-builder{
+.form-builder,
+.test{
     /* width: 100%; */
     min-height: 196px;
     padding-bottom: 15px;

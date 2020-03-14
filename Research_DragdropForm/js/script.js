@@ -2,6 +2,7 @@ $(document).ready(function () {
     var columns = [
         {
             type:'component-col-1',
+            templateView:'<div class="form-builder col-12"></div>',
             template:
                  '<div class="row" type="component-col-1">'
                 +   '<div class="form-builder col-12"></div>'
@@ -33,6 +34,69 @@ $(document).ready(function () {
                 +   '<div class="form-builder col-lg-3 col-md-3 col-12"></div>'
                 +   '<div class="form-builder col-lg-3 col-md-3 col-12"></div>'
                 + '</div>'
+        },
+        {
+            type: 'component-table',
+            templateView: 				  
+                '<div class="holder">'
+                + '    <div class="form-group">'
+                + '        <label bind="title"> Title  </label>'
+                + '        <i class="small" bind="desc"> Desc </i>'
+                + '          <div class="table-responsive table_` + field + `" >'
+                + '                <table class="table">'
+                + '                    <thead>'
+                + '                        <tr>'
+                + '                            <th class="form-builder">'
+                + '                            </th>'
+                + '                            <th class="form-builder">'
+                + '                            </th>'
+                + '                        </tr>'
+                + '                    </thead>'
+                + '                    <tbody>'
+                + '                        <tr>'
+                + '                            <td class="form-builder">'
+                + '                            </td>'
+                + '                            <td class="form-builder">'
+                + '                            </td>'
+                + '                        </tr>'
+                + '                    </tbody>'
+                + '                </table>'
+                + '            </div>'
+                + '    </div>'
+                + '</div>',
+            template: 		
+                '<div class="row" type="component-table">'
+                + ' <div class="form-builder col-12">'
+                + '     <div class="prev-holder">'                  
+                + '         <div class="form-group" >'
+                + '             <div class="table-responsive table_` + field + `" >'
+                + '                <table class="table">'
+                + '                    <thead>'
+                + '                        <tr>'
+                + '                            <th class="test">'
+                + '                                <button type="button" class="remove_col_table noDrag" data-field="` + field + `">X</button>'                                
+                + '                            </th>'
+                + '                            <th class="test">'
+                + '                                <button type="button" class=" remove_col_table noDrag" data-field="` + field + `">X</button>'                                       
+                + '                            </th>'
+                + '                        </tr>'
+                + '                    </thead>'
+                + '                    <tbody>'
+                + '                        <tr>'
+                + '                            <td class="form-builder">'
+                + '                            </td>'
+                + '                            <td class="form-builder">'
+                + '                            </td>'
+                + '                        </tr>'
+                + '                    </tbody>'
+
+                + '                </table>'
+                + '            </div>'
+                + '         </div>'
+                + '     </div>'
+                +   '</div>'
+                + '</div>',
+               
         }
     ];
 
@@ -115,64 +179,7 @@ $(document).ready(function () {
                 + '      </div>'
                 + '</div>',
         },
-        {
-            type: 'table',
-            templateView: 				  
-                '<div class="holder">'
-                + '    <div class="form-group">'
-                + '        <label bind="title"> Title  </label>'
-                + '        <i class="small" bind="desc"> Desc </i>'
-                + '          <div class="table-responsive table_` + field + `" >'
-                + '                <table class="table">'
-                + '                    <thead>'
-                + '                        <tr>'
-                + '                            <th class="form-builder">'
-                + '                            </th>'
-                + '                            <th class="form-builder">'
-                + '                            </th>'
-                + '                        </tr>'
-                + '                    </thead>'
-                + '                    <tbody>'
-                + '                        <tr>'
-                + '                            <td class="form-builder">'
-                + '                            </td>'
-                + '                            <td class="form-builder">'
-                + '                            </td>'
-                + '                        </tr>'
-                + '                    </tbody>'
-                + '                </table>'
-                + '            </div>'
-                + '    </div>'
-                + '</div>',
-            templateEdit: 				  
-                '<div class="prev-holder">'                  
-                + '    <div class="form-group" type="table" >'
-                + '          <div class="table-responsive table_` + field + `" >'
-                + '                <table class="table">'
-                + '                    <thead>'
-                + '                        <tr>'
-                + '                            <th class="form-builder">'
-                + '                                <button type="button" class="remove_col_table noDrag" data-field="` + field + `">X</button>'                                
-                + '                            </th>'
-                + '                            <th class="form-builder">'
-                + '                                <button type="button" class=" remove_col_table noDrag" data-field="` + field + `">X</button>'                                       
-                + '                            </th>'
-                + '                        </tr>'
-                + '                    </thead>'
-                + '                    <tbody>'
-                + '                        <tr>'
-                + '                            <td class="form-builder">'
-                + '                            </td>'
-                + '                            <td class="form-builder">'
-                + '                            </td>'
-                + '                        </tr>'
-                + '                    </tbody>'
-
-                + '                </table>'
-                + '            </div>'
-                + '      </div>'
-                + '</div>',
-        }
+        
     ]
 
     sortableRow(components, columns);
@@ -270,7 +277,9 @@ function sortableRow(components, columns) {
     $(".components-nav .component-col").draggable({
         helper: function () {
             var field = generateField();
-            var html = ` <button type="button" class="btn btn-primary btn-sm remove_bal_field pull-right" data-field="` + field + `">X</button>`;
+            var html = `<div class="btns-section">
+                            <button type="button" class="btn btn-primary btn-sm remove_bal_field pull-right" data-field="` + field + `">X</button>
+                        </div>`;
             return $('<div class="layout li_' + field + '">').html(html);
         },
         connectToSortable: ".layout-builder",
@@ -278,10 +287,17 @@ function sortableRow(components, columns) {
             
             $.each(columns, function(i, e) {
                 var typeCol = e.type;
-                
                 if(typeCol === event.target.id){                 
                     html = ui.helper.append(e.template);
+                    
+                    if(event.target.id === "component-table"){
+                        var field = generateField();
+                        // <button type="button" class="btn btn-primary btn-sm add_row_table pull-right" data-field="` + field + `">Add row</button>    
+                        var html = ui.helper.find(".btns-section").append(`<button type="button" class="btn btn-primary btn-sm add_col_table pull-right" data-field="` + field + `">Add th</button>     `);
+                    }
                 }
+
+               
             }); 
         },
         stop: function(event, ui) {
@@ -289,19 +305,7 @@ function sortableRow(components, columns) {
         }
     });
 
-    // $(".components-nav .component-table").draggable({
-    //     helper: function () {
-    //         return getTabledHTML();
-    //     },
-    //     revert: true,
-    //     connectToSortable: ".layout-builder",
-    //     start: function (event, ui) {
-           
-    //     },
-    //     stop: function(event, ui) {
-    //         sortableForm(components);
-    //     } 
-    // });
+
    
     $( ".layout-builder" ).disableSelection();
 }
@@ -354,18 +358,14 @@ function sortableForm(components){
                
             }); 
             
-            if(event.target.id === "component-table"){
-                var field = generateField();
-                var html = ui.helper.find(".btns-section").append(`<button type="button" class="btn btn-primary btn-sm add_col_table pull-right" data-field="` + field + `">Add th</button>     
-                <button type="button" class="btn btn-primary btn-sm add_row_table pull-right" data-field="` + field + `">Add row</button>     `);
-            }
+           
         },
         stop: function(event, ui) {
             var pos = ui.helper.position(); 
             twoWayBinding();
             modifyDatapicker();
             if(event.target.id === "component-table"){                    
-                sortableForm(components);
+                
             }
 
              
@@ -400,37 +400,59 @@ function getList(){
             row['type'] = $(this).find(".row").attr("type"); 
             row['metadata'] =  {"index": i};
             row['childNode'] = [];
-        
-        $(this).find(".row .form-builder").each(function(i, e) {     
-
-            var column = {};  
-            column['type'] = 'col'; 
-            column['metadata'] =  {"index": i};
-            column['childNode'] = [];
-
-            $(this).find(".prev-holder .form-group").each(function(i, e) {
-                var properties = {}; 
-                console.log($(this));
-                if($(this).attr("type") == "table"){
+            console.log($(this).find(".row").attr("type"));
+      
+            if(row['type'] == "component-table"){
+               console.log('loai table');
+               $(this).find(".row .table > tbody > tr > td").each(function(i, e) {     
+          
+                var column = {};  
+                column['type'] = 'col_' + i; 
+                column['metadata'] =  {"index": i};
+                column['childNode'] = [];
+    
+                $(this).find(".prev-holder .form-group").each(function(i, e) {
+                    var properties = {}; 
+                    
+    
                     properties['metadata'] = 
                     {'type': $(this).attr("type"),
                     'title': $(this).find("input").val(),
                     'desc': $(this).find("textarea").val()};
-                }else{
-                    properties['metadata'] = 
-                    {'type': $(this).attr("type"),
-                    'title': $(this).find("input").val(),
-                    'desc': $(this).find("textarea").val()};
-                }
+
+                    column['childNode'].push(properties);     
+                              
+                });  
                 
-                properties['childNode'] = [];
-                column['childNode'].push(properties);     
-                          
-            });  
+                row['childNode'].push(column);
+            });
             
-            row['childNode'].push(column);
-        });
+            }else{
+                $(this).find(".row .form-builder").each(function(i, e) {     
+          
+                    var column = {};  
+                    column['type'] = 'col_' + i; 
+                    column['metadata'] =  {"index": i};
+                    column['childNode'] = [];
         
+                    $(this).find(".prev-holder .form-group").each(function(i, e) {
+                        var properties = {};                       
+                        properties['metadata'] = 
+                        {'type': $(this).attr("type"),
+                        'title': $(this).find("input").val(),
+                        'desc': $(this).find("textarea").val()};
+                        
+                        column['childNode'].push(properties);     
+                                  
+                    });  
+                    
+                    row['childNode'].push(column);
+                });
+                
+            }
+
+        
+
         masterList.push(row);
     });
 
@@ -469,7 +491,7 @@ function getList(){
     formSections['detail'] = detailList;
     formList.push(formSections);
     var JsonString = JSON.stringify(formList, undefined, 2);
-    console.log(JsonString);
+    console.log(formList);
    return JsonString;
 }
 
@@ -491,7 +513,8 @@ function previewMasterList(components, columns){
                
                 $.each(row.childNode, function(id, col) {
                     partyHTML += '<div class = "col-12 form-builder">';    
-                     
+                    //var html = ui.helper.find(".btns-section").append(`<button type="button" class="btn btn-primary btn-sm add_col_table pull-right" data-field="` + field + `">Add th</button>     `);
+
                        $.each(col.childNode, function(id, properties){         
                         var property =  properties.metadata;
                         var condition = properties.metadata.type;
