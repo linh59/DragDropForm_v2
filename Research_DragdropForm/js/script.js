@@ -2,7 +2,7 @@ $(document).ready(function () {
     var columns = [
         {
             type:'component-col-1',
-            templateView:'<div class="form-builder col-12"></div>',
+            templateView:'<div class="form-builder col-12">',
             template:
                  '<div class="row" type="component-col-1">'
                 +   '<div class="form-builder col-12"></div>'
@@ -10,6 +10,7 @@ $(document).ready(function () {
         },
         {
             type:'component-col-2',
+            templateView:'<div class="form-builder col-lg-6 col-md-6 col-12">',
             template:
                   '<div class="row" type="component-col-2">'
                 +   '<div class="form-builder col-lg-6 col-md-6 col-12"></div>'
@@ -18,6 +19,7 @@ $(document).ready(function () {
         },
         {
             type:'component-col-3',
+            templateView:'<div class="form-builder  col-lg-4 col-md-4 col-12">',
             template:
                   '<div class="row" type="component-col-3">'
                 +   '<div class="form-builder col-lg-4 col-md-4 col-12"></div>'
@@ -27,6 +29,7 @@ $(document).ready(function () {
         },
         {
             type:'component-col-4',
+            templateView:'<div class="form-builder  col-lg-3 col-md-3 col-12">',
             template:
                   '<div class="row" type="component-col-4">'
                 +   '<div class="form-builder col-lg-3 col-md-3 col-12"></div>'
@@ -38,32 +41,22 @@ $(document).ready(function () {
         {
             type: 'component-table',
             templateView: 				  
-                '<div class="holder">'
-                + '    <div class="form-group">'
-                + '        <label bind="title"> Title  </label>'
-                + '        <i class="small" bind="desc"> Desc </i>'
-                + '          <div class="table-responsive table_` + field + `" >'
-                + '                <table class="table">'
-                + '                    <thead>'
-                + '                        <tr>'
-                + '                            <th class="form-builder">'
-                + '                            </th>'
-                + '                            <th class="form-builder">'
-                + '                            </th>'
-                + '                        </tr>'
-                + '                    </thead>'
-                + '                    <tbody>'
-                + '                        <tr>'
-                + '                            <td class="form-builder">'
-                + '                            </td>'
-                + '                            <td class="form-builder">'
-                + '                            </td>'
-                + '                        </tr>'
-                + '                    </tbody>'
-                + '                </table>'
-                + '            </div>'
-                + '    </div>'
-                + '</div>',
+            + '          <div class="table-responsive >'
+            + '                <table class="table">'
+            + '                    <thead>'
+            + '                        <tr>'
+            + '                            <th class="form-builder">'
+            + '                            </th>'
+            + '                        </tr>'
+            + '                    </thead>'
+            + '                    <tbody>'
+            + '                        <tr>'
+            + '                            <td class="form-builder">'
+            + '                            </td>'
+            + '                        </tr>'
+            + '                    </tbody>'
+            + '                </table>'
+            + '            </div>',
             template: 		
                 '<div class="row" type="component-table">'
                 + ' <div class="form-builder col-12">'
@@ -124,6 +117,7 @@ $(document).ready(function () {
             templateView: 				  
                 '<div class="holder">'
                 + '    <div class="form-group" >'
+                
                 + '        <label bind="title"> Title  </label>'
                 + '        <i class="small" bind="desc"> Desc </i>'
                 + '        <input type="text">'
@@ -312,7 +306,7 @@ function sortableRow(components, columns) {
 
 function sortableForm(components){
 
-    $(".form-builder").sortable({
+    $(".form-builder, .components-nav .component").sortable({
         connectWith: ".form-builder"  ,
         placeholder: "placeholder-highlight" ,
         cursor: 'move',
@@ -325,8 +319,25 @@ function sortableForm(components){
         },
         stop: function (event, ui) {
         
+        },
+        receive: function(event, ui) {
+            var $this = $(this);
+            console.log($this.children('.form_builder_field').length);
+            if (($this.children('.form_builder_field').length >= 1)) {
+                console.log('Only one per list!');
+                $($this).sortable('disable');
+            }
         }
-    });
+    })
+    
+
+    // $( ".form-builder" ).on( "sortreceive", function(event, ui) {
+    //     console.log(ui);
+    //     if($(this).length > 2){
+            
+    //         $(this).sortable('disable');
+    //     }
+    // });
 
     $(".components-nav .component").draggable({
         helper: function () {
@@ -361,7 +372,7 @@ function sortableForm(components){
            
         },
         stop: function(event, ui) {
-            var pos = ui.helper.position(); 
+            //var pos = ui.helper.position(); 
             twoWayBinding();
             modifyDatapicker();
             if(event.target.id === "component-table"){                    
@@ -369,17 +380,14 @@ function sortableForm(components){
             }
 
              
-            // console.log(ui.helper.parent());
+            console.log(event);
+
             // var col = ui.helper.parent().prevAll().length;
-              
-            //   var headerObj = ui.helper.parent().parents('table').find('td').eq(col);
-            //   return headerObj.append("<div>Hello</div>");
-              // A quick test!
-            //   console.log("My cell td is called: " + headerObj.text());
-            //var pos = ui.helper.position(); // just get pos.top and pos.left
+
         }
     });
 
+    
 
     $( ".form-builder" ).disableSelection();
 }
@@ -403,7 +411,6 @@ function getList(){
             console.log($(this).find(".row").attr("type"));
       
             if(row['type'] == "component-table"){
-               console.log('loai table');
                $(this).find(".row .table > tbody > tr > td").each(function(i, e) {     
           
                 var column = {};  
@@ -504,93 +511,195 @@ function previewMasterList(components, columns){
     var partyHTML = '';
     
 
-    $.each(obj[0].master, function(partyIdx, row) {        
-        partyHTML += '<div class = "row">';
-        var numCol = row.childNode.length;
-
-        switch (numCol) {
-            case (numCol = 1):                   
-               
-                $.each(row.childNode, function(id, col) {
-                    partyHTML += '<div class = "col-12 form-builder">';    
-                    //var html = ui.helper.find(".btns-section").append(`<button type="button" class="btn btn-primary btn-sm add_col_table pull-right" data-field="` + field + `">Add th</button>     `);
-
-                       $.each(col.childNode, function(id, properties){         
-                        var property =  properties.metadata;
-                        var condition = properties.metadata.type;
-                        $.each(components, function(i, e) {
-                            var typeComponent = e.type;
-                            
-                            if(condition === typeComponent){                                              
-                                var html =  $(e.templateView);
-
-                                html.find('.form-group > [bind=title]').text(property.title);
-                                html.find('.form-group > [bind=desc]').text(property.desc);
-                                
-                                partyHTML += html.html();
-
-                            }
-                        });   
+    $.each(obj[0].master, function(partyIdx, row) {   
+        partyHTML += '<div class = "row">';     
+        partyHTML += '<div class = "col-12">';
+        var condition = row.type;
+        if(condition == "component-table"){
+            partyHTML += '  <div class="table-responsive" >'
+            partyHTML += '     <table class="table">'
+            partyHTML += '          <thead>'
+            partyHTML += '              <tr>'
+            $.each(row.childNode, function(id,col ) {
+                partyHTML += '<th>';
+                $.each(col.childNode, function(id,properties ) {
+                    var property =  properties.metadata;
+                    var condition = properties.metadata.type;
+                    $.each(components, function(i, e) {
+                        var typeComponent = e.type;
                         
-                    })                      
-                });
-               
-                partyHTML += '</div>';
-                break;
+                        if(condition === typeComponent){                                              
+                            var html =  $(e.templateView);
 
-            case (numCol = 2):             
-                $.each(row.childNode, function(id, col) {
-                    partyHTML += '<div class = "col-lg-6 col-md-6 col-12 form-builder">';
-                    $.each(col.childNode, function(id, properties){         
-                        var property =  properties.metadata;
-                        var condition = properties.metadata.type;
-                        $.each(components, function(i, e) {
-                            var typeComponent = e.type;
+                            html.find('.form-group > [bind=title]').text(property.title);
+                     
+                            partyHTML += html.html();
                             
-                            if(condition === typeComponent){                                              
-                                var html =  $(e.templateView);
+                        }
+                    });   
 
-                                html.find('.form-group > [bind=title]').text(property.title);
-                                html.find('.form-group > [bind=desc]').text(property.desc);
-                                
-                                partyHTML += html.html();
+                })
+                partyHTML += '</th>';
+    
+            })
+           
 
-                            }
-                        });   
-                    })  
-                    partyHTML += '</div>';
-                
-                });                      
-            
-                break;
-
-            case (numCol = 3):                   
-                $.each(row.childNode, function(id, col) {
-                    partyHTML += '<div class = "col-lg-4 col-md-4 col-12 form-builder">';
-                    $.each(col.childNode, function(id, properties){         
-                        var property =  properties.metadata;
-                        var condition = properties.metadata.type;
-                        $.each(components, function(i, e) {
-                            var typeComponent = e.type;
+            partyHTML += '              </tr>'
+            partyHTML += '         </thead>'
+            partyHTML += '          <tbody>'
+            partyHTML += '             <tr>'
+            $.each(row.childNode, function(id,col ) {
+                partyHTML += '<td class="form-builder">';
+                $.each(col.childNode, function(id,properties ) {
+                    var property =  properties.metadata;
+                    var condition = properties.metadata.type;
+                    $.each(components, function(i, e) {
+                        var typeComponent = e.type;
+                        
+                        if(condition === typeComponent){                                              
+                            var html =  $(e.templateView);
+                                                 
                             
-                            if(condition === typeComponent){                                              
-                                var html =  $(e.templateView);
+                            partyHTML += html.html();
+                            
+                        }
+                    });   
 
-                                html.find('.form-group > [bind=title]').text(property.title);
-                                html.find('.form-group > [bind=desc]').text(property.desc);
-                                
-                                partyHTML += html.html();
-
-                            }
-                        });   
-                    })  
-                    partyHTML += '</div>';
-                
-                });   
-                break;
+                   
+                })
+                partyHTML += '</td>';
+    
+            })
+            partyHTML += '             </tr>'
+            partyHTML += '          </tbody>'
+            partyHTML += '      </table>'
+            partyHTML += '  </div>'
+            partyHTML += '</div>'
         
+        }else{
+            $.each(row.childNode, function(id,col ) {
+            
+                $.each(columns, function(i, e) {
+                    var typeRow = e.type;
+                    console.log(row.childNode.length);
+                    if(condition === typeRow){             
+                        var htmlCol = e.templateView;
+                        partyHTML += htmlCol;
+                        $.each(col.childNode, function(id, properties){         
+                                            var property =  properties.metadata;
+                                            var condition = properties.metadata.type;
+                                            $.each(components, function(i, e) {
+                                                var typeComponent = e.type;
+                                                
+                                                if(condition === typeComponent){                                              
+                                                    var html =  $(e.templateView);
+                    
+                                                    html.find('.form-group > [bind=title]').text(property.title);
+                                                    html.find('.form-group > [bind=desc]').text(property.desc);
+                                                    
+                                                    
+                                                    partyHTML += html.html();
+                                                    //console.log(htmlCol);
+                                                    
+                                                }
+                                            });   
+                                            
+                                        }) 
+                                       
+                                        partyHTML += "</div>"                
+                       
+                    }
+                
+        
+                }); 
+    
+            })
         }
-        partyHTML += '</div>';
+
+ 
+        // switch (numCol) {
+        //     case (numCol = 1):                   
+               
+        //         $.each(row.childNode, function(id, col) {
+        //             partyHTML += '<div class = "col-12 form-builder">';    
+        //             //var html = ui.helper.find(".btns-section").append(`<button type="button" class="btn btn-primary btn-sm add_col_table pull-right" data-field="` + field + `">Add th</button>     `);
+
+        //                $.each(col.childNode, function(id, properties){         
+        //                 var property =  properties.metadata;
+        //                 var condition = properties.metadata.type;
+        //                 $.each(components, function(i, e) {
+        //                     var typeComponent = e.type;
+                            
+        //                     if(condition === typeComponent){                                              
+        //                         var html =  $(e.templateView);
+
+        //                         html.find('.form-group > [bind=title]').text(property.title);
+        //                         html.find('.form-group > [bind=desc]').text(property.desc);
+                                
+        //                         partyHTML += html.html();
+
+        //                     }
+        //                 });   
+                        
+        //             })                      
+        //         });
+               
+        //         partyHTML += '</div>';
+        //         break;
+
+        //     case (numCol = 2):             
+        //         $.each(row.childNode, function(id, col) {
+        //             partyHTML += '<div class = "col-lg-6 col-md-6 col-12 form-builder">';
+        //             $.each(col.childNode, function(id, properties){         
+        //                 var property =  properties.metadata;
+        //                 var condition = properties.metadata.type;
+        //                 $.each(components, function(i, e) {
+        //                     var typeComponent = e.type;
+                            
+        //                     if(condition === typeComponent){                                              
+        //                         var html =  $(e.templateView);
+
+        //                         html.find('.form-group > [bind=title]').text(property.title);
+        //                         html.find('.form-group > [bind=desc]').text(property.desc);
+                                
+        //                         partyHTML += html.html();
+
+        //                     }
+        //                 });   
+        //             })  
+        //             partyHTML += '</div>';
+                
+        //         });                      
+            
+        //         break;
+
+        //     case (numCol = 3):                   
+        //         $.each(row.childNode, function(id, col) {
+        //             partyHTML += '<div class = "col-lg-4 col-md-4 col-12 form-builder">';
+        //             $.each(col.childNode, function(id, properties){         
+        //                 var property =  properties.metadata;
+        //                 var condition = properties.metadata.type;
+        //                 $.each(components, function(i, e) {
+        //                     var typeComponent = e.type;
+                            
+        //                     if(condition === typeComponent){                                              
+        //                         var html =  $(e.templateView);
+
+        //                         html.find('.form-group > [bind=title]').text(property.title);
+        //                         html.find('.form-group > [bind=desc]').text(property.desc);
+                                
+        //                         partyHTML += html.html();
+
+        //                     }
+        //                 });   
+        //             })  
+        //             partyHTML += '</div>';
+                
+        //         });   
+        //         break;
+        
+        // }
+         partyHTML += '</div>';
       });
       
     $('.preview-section .master-section').append(partyHTML);

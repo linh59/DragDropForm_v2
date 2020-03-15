@@ -65,6 +65,17 @@ input, textarea{
        width: 242px;
    }
 
+   .preview-section .table tr .form-group > *{
+        display: none;
+   }
+   .preview-section .table tr th .form-group label{
+    display: block;
+    }
+   .preview-section .table tr td .form-group input,
+   .preview-section .table tr td .form-group textarea{
+        display: block;
+    }
+
 /* Org Chart */
 /*#region Organizational Chart*/
 .tree * {
